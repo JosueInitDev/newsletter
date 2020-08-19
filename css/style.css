@@ -1,0 +1,212 @@
+/*--
+Author: Josué
+Author URL: jose.init.dev@gmail.com
+License: Apache License :: Josué Yao
+License Version: 2.0, January 2004
+License URL: http://mailto:jose.init.dev@gmail.com :: http://www.apache.org/licenses
+Project First version : 2020-08-18
+Project Actual Version: 1.0  -  date: 2020-08-18
+--*/
+
+/******colors variables******/
+:root {
+/*
+	--boldColor: #598BCF;
+	--lightColor: #86B5F5;
+*/
+	--boldColor: #1E5B89;
+	--lightColor: #317DB6;
+}
+/******//*colors variables******/
+
+.leftRow {
+	background: var(--boldColor);
+	color: #fff;
+	padding: 15px;
+	text-align: center;
+	overflow: auto;
+	height: 100vh;
+}
+.logoBlock {
+	background-image: url('../img/logo.jpg');
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	background-size: cover;
+	background-position: center;
+	height: 70px;
+	cursor: pointer;
+	
+}
+.logo {
+	
+}
+.btnIcon {
+	font-size: 20px;
+	border: 0px;
+	background: var(--lightColor);
+	padding: 10px;
+	border-radius: 50%;
+	color: #fff;
+	transition: transform .5s;
+}
+.btnIcon:hover {
+	transform: scale(1.5);
+}
+.btnIcon:focus {
+   	outline: none !important;
+}
+.btnIcon i {
+	color: #fff;
+	margin-left: -5px;
+	background: orange;
+	padding: 3px;
+	border-radius: 50%;
+	font-size: 12px;
+}
+.newMess {
+	font-size: 13px;
+	border: 0px;
+	background: var(--lightColor);
+	padding: 10px;
+	border-radius: 10px;
+	color: #fff;
+	transition: transform .5s;
+}
+.newMess:hover {
+	transform: scaleX(1.2);
+}
+.leftRow span {
+	font-size: 10px;
+}
+.leftBottom {
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	padding: 10px;
+	color: var(--lightColor);
+	border-top: 4px solid #86B5F5;
+}
+/*//this code is created by Josué - jose.init.dev@gmail.com*/
+.leftBottom button {
+	background: var(--lightColor);
+	color: #fff;
+	border: none;
+	padding: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-radius: 5px;
+}
+.centerRow {
+	background: var(--lightColor);
+	color: #fff;
+	padding: 15px;
+	overflow: auto;
+	height: 100vh;
+}
+.centerRow input {
+	background: var(--boldColor);
+	color: #fff;
+	border: none;
+	border-radius: 15px;
+}
+body {
+	height: 100vh;
+	font-family: 'Roboto';
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 3px grey; 
+  border-radius: 20px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--boldColor);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: cornflowerblue; 
+}
+.entity {
+	padding:30px;
+	padding-top:11px;
+	padding-bottom:0px;
+}
+.mailEntity {
+	padding: 10px;
+	border-radius: 15px;
+	background: var(--boldColor);
+	color: #D6D6D6;
+}
+.mailEntity:hover {
+	background: var(--lightColor);
+	border: 4px solid var(--boldColor);
+	cursor: grab;
+}
+.mailEntity2 {
+	padding: 10px;
+	border-radius: 15px;
+	background: #6E9AD6;
+	color: #D6D6D6;
+}
+.mailEntity2:hover {
+	border: 4px solid var(--boldColor);
+	cursor: grab;
+}
+.notRead {
+	color: orange;
+	position: absolute;
+	top: inherit;
+	right: inherit;
+	font-size: 12px;
+}
+.rightRow {
+	background: #fff;
+	color: #000;
+	overflow: auto;
+	height: 100vh;
+/*
+    background: linear-gradient(-45deg, #FFFFFF, #DFDF94, #94DADF, #FAE39A);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+*/
+}
+/*
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+*/
+/*//this code is created by Josué - jose.init.dev@gmail.com*/
+.bodyTop {
+	background: var(--boldColor);
+	padding: 15px;
+	border-radius: 0px 0px 15px 15px;
+}
+.bodyTop a {
+	color: #D6D6D6;
+}
+.bodyTop a:hover {
+	color: var(--lightColor);
+}
+.body {
+	padding-left: 30px;
+	padding-right: 30px;
+}
+.bodyDefault {
+	width: 210px;
+	height: 210px;
+	border-radius: 50%;
+	margin: auto;
+	margin-top: 30vh;
+	background: rgba(0,0,0,0.2);
+	padding: 50px;
+	text-align: center;
+}

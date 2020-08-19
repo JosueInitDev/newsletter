@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+-->
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<link type="text/css" href="sample/css/sample.css" rel="stylesheet" media="screen" />
+	<title>Josué editor</title>
+</head>
+<body>
+	<main>
+		<div class="newEntete">
+			<label for="obj">Objet: </label>
+			<input type="text" id="obj" name="obj" placeholder="Objet du mail..." class="obj">|||
+			<label for="to">A: </label>
+			<input type="text" id="to" name="to" placeholder="Ex: to1@g.com;to2@g.com;to3@g.com..." class="to">
+			<hr>
+			<label for="cc">Cc: </label>
+			<input type="text" id="cc" name="cc" placeholder="Ex: cc1@g.com;cc2@g.com;cc3@g.com..." class="cc">|||
+			<label for="cci">Cci: </label>
+			<input type="text" id="cci" name="cci" placeholder="Ex: cci1@g.com;cci2@g.com;cci3@g.com..." class="cci">
+			<hr>
+			<label>Message</label>
+		</div>
+		<hr>
+		<div class="centered">
+			<div class="document-editor">
+				<div class="toolbar-container"></div>
+				<div class="content-container">
+					<div id="editor">
+						<h2>The three greatest things you learn from traveling</h2>
+
+						<p>Like all the great things on earth traveling teaches us by example. Here are some of the most precious lessons I’ve learned over the years of traveling.</p>
+
+						<h3>Appreciation of diversity</h3>
+
+						<p>Getting used to an entirely different culture can be challenging. While it’s also nice to learn about cultures online or from books, nothing comes close to experiencing <a href="https://en.wikipedia.org/wiki/Cultural_diversity">cultural diversity</a> in person. You learn to appreciate each and every single one of the differences while you become more culturally fluid.</p>
+
+						<figure class="image image-style-align-right"><img src="sample/img/umbrellas.jpg" alt="Three Monks walking on ancient temple.">
+							<figcaption>Leaving your comfort zone might lead you to such beautiful sceneries like this one.</figcaption>
+						</figure>
+
+						<h3>Confidence</h3>
+
+						<p>Going to a new place can be quite terrifying. While change and uncertainty makes us scared, traveling teaches us how ridiculous it is to be afraid of something before it happens. The moment you face your fear and see there was nothing to be afraid of, is the moment you discover bliss.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<br>
+	<center><button onclick="getContent()" class="sendMail">ENVOYER ->></button></center>
+			
+	<script src="ckeditor.js"></script>
+
+	<script>
+		DecoupledEditor
+			.create( document.querySelector( '#editor' ), {
+				// toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ]
+			} )
+			.then( editor => {
+				const toolbarContainer = document.querySelector( 'main .toolbar-container' );
+
+				toolbarContainer.prepend( editor.ui.view.toolbar.element );
+
+				window.editor = editor;
+			} )
+			.catch( err => {
+				console.error( err.stack );
+			} );
+
+		function getContent(){
+			let edt=document.getElementById('editor').innerHTML;
+			console.log(edt);
+		}
+	</script>
+		
+	<style>
+		.sendMail {
+			width: 70%;
+			padding: 10px;
+			border-radius: 10px;
+			background: #1E5B89;
+			color: #fff;
+			cursor: pointer;
+			transition: transform .5s;
+		}
+		.sendMail:hover {
+			background: #317DB6;
+			color: orange;
+			transform: scaleX(1.03);
+		}
+		.newEntete label {
+			color: #1E5B89;
+			font-weight: bold;
+			font-size: 20px;
+		}
+		.newEntete input {
+			border: 1px solid #1E5B89;
+			padding: 10px;
+			border-radius: 7px;
+		}
+		.newEntete input:focus {
+			outline-color: orange;
+		}
+		.obj {
+			width: 60%;
+			transition: all 0.5s ease;
+		}
+		.to {
+			width: 100px;
+			transition: all 0.5s ease;
+		}
+		.newEntete {
+			padding-left: 100px;
+		}
+		.cc, .cci {
+			width: 100px;
+			transition: all 0.5s ease;
+		}
+		.cc:focus {
+			width: 60%;
+		}
+		.cci:focus {
+			width: 60%;
+		}
+		
+		::-webkit-scrollbar {
+		  width: 10px;
+		}
+		::-webkit-scrollbar-track {
+		  box-shadow: inset 0 0 3px grey; 
+		  border-radius: 20px;
+		}
+		::-webkit-scrollbar-thumb {
+		  background: #1E5B89;
+		}
+		::-webkit-scrollbar-thumb:hover {
+		  background-color: cornflowerblue; 
+		}
+	</style>
+	<script>
+		let obj=document.getElementById('obj');
+		let to=document.getElementById('to');
+		obj.addEventListener('focus', function(){
+			obj.style.width="60%";
+			to.style.width="100px";
+		});
+		to.addEventListener('focus', function(){
+			to.style.width="60%";
+			obj.style.width="100px";
+		});
+	</script>
+</body>
+</html>
