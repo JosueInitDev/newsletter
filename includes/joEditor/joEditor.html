@@ -2,6 +2,7 @@
 <!--
 Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+//this code is created by Josué - jose.init.dev@gmail.com
 -->
 <html lang="en">
 <head>
@@ -9,19 +10,26 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 	<link type="text/css" href="sample/css/sample.css" rel="stylesheet" media="screen" />
 	<title>Josué editor</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 	<main>
 		<div class="newEntete">
-			<label for="obj">Objet: </label>
-			<input type="text" id="obj" name="obj" placeholder="Objet du mail..." class="obj">|||
-			<label for="to">A: </label>
-			<input type="text" id="to" name="to" placeholder="Ex: to1@g.com;to2@g.com;to3@g.com..." class="to">
-			<hr>
-			<label for="cc">Cc: </label>
-			<input type="text" id="cc" name="cc" placeholder="Ex: cc1@g.com;cc2@g.com;cc3@g.com..." class="cc">|||
-			<label for="cci">Cci: </label>
-			<input type="text" id="cci" name="cci" placeholder="Ex: cci1@g.com;cci2@g.com;cci3@g.com..." class="cci">
+			<form id="sendForm" method="post" action="../../includes/myMail.php?opt=isSent"> <!--will be submit avec javaScript-->
+				<label for="obj">Objet: </label>
+				<input type="text" id="obj" name="obj" class="obj">|||
+				<label for="to">A: </label>
+				<input type="text" id="to" name="to" class="to">
+				<hr>
+				<label for="cc">Cc: </label>
+				<input type="text" id="cc" name="cc" class="cc">|||
+				<label for="cci">Cci: </label>
+				<input type="text" id="cci" name="cci" class="cci">
+				<input type="hidden" id="auth" name="author" value="Author">
+				<input type="hidden" id="authMail" name="authMail" value="Author Mail">
+				<input type="hidden" id="authPic" name="authPic" value="gmail.png">
+				<input type="hidden" id="messCont" name="messCont" value="">
+			</form>
 			<hr>
 			<label>Message</label>
 		</div>
@@ -31,31 +39,40 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 				<div class="toolbar-container"></div>
 				<div class="content-container">
 					<div id="editor">
-						<h2>The three greatest things you learn from traveling</h2>
-
-						<p>Like all the great things on earth traveling teaches us by example. Here are some of the most precious lessons I’ve learned over the years of traveling.</p>
-
-						<h3>Appreciation of diversity</h3>
-
-						<p>Getting used to an entirely different culture can be challenging. While it’s also nice to learn about cultures online or from books, nothing comes close to experiencing <a href="https://en.wikipedia.org/wiki/Cultural_diversity">cultural diversity</a> in person. You learn to appreciate each and every single one of the differences while you become more culturally fluid.</p>
-
-						<figure class="image image-style-align-right"><img src="sample/img/umbrellas.jpg" alt="Three Monks walking on ancient temple.">
-							<figcaption>Leaving your comfort zone might lead you to such beautiful sceneries like this one.</figcaption>
-						</figure>
-
-						<h3>Confidence</h3>
-
-						<p>Going to a new place can be quite terrifying. While change and uncertainty makes us scared, traveling teaches us how ridiculous it is to be afraid of something before it happens. The moment you face your fear and see there was nothing to be afraid of, is the moment you discover bliss.</p>
+						<!------mails content here------->
 					</div>
 				</div>
 			</div>
 		</div>
+		<!-----set default values si they exists--------->
+		<script type="text/javascript" src="../../data/draftMails.json"></script> <!--include draft mails-->
+		<script>
+			function getUrlVars(){ //get url parameters avec JavaScript
+				var vars = {};
+				var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+					vars[key] = value;
+				});
+				return vars;
+			}
+			let id=parseInt(getUrlVars()['id']);
+			//console.log(draft[0].author);
+			if (id>=0){
+				document.getElementById('obj').value=draft[id].object;
+				document.getElementById('to').value=draft[id].to;
+				document.getElementById('cc').value=draft[id].cc;
+				document.getElementById('cci').value=draft[id].cci;
+				document.getElementById('editor').innerHTML=draft[id].message;
+			}
+		</script>
+		<!-----//set default values si they exists--------->
 	</main>
 	<br>
 	<center><button onclick="getContent()" class="sendMail">ENVOYER ->></button></center>
-			
+	<br><br>
+	<i style="font-size:8px">&copy; Made by Josué</i>
 	<script src="ckeditor.js"></script>
 
+<!--	<script type="text/javascript" src="../../data/sentMails.json"></script> load sent mails data to be edited by getContent()-->
 	<script>
 		DecoupledEditor
 			.create( document.querySelector( '#editor' ), {
@@ -71,10 +88,45 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 			.catch( err => {
 				console.error( err.stack );
 			} );
-
-		function getContent(){
-			let edt=document.getElementById('editor').innerHTML;
-			console.log(edt);
+		
+		document.getElementById('to').addEventListener("keyup", function(event){ //add separator ( ; ) between mails
+			if (event.keyCode === 32){ //if space clicked
+				//event.preventDefault();
+				document.getElementById('to').value = document.getElementById('to').value+"; ";
+			}
+			else if (event.keyCode === 13){ //if enter clicked
+				document.getElementById('to').value = document.getElementById('to').value+" ; ";
+			}
+		});
+		document.getElementById('cc').addEventListener("keyup", function(event){ //add separator ( ; ) between mails
+			if (event.keyCode === 32){ //if space clicked
+				//event.preventDefault();
+				document.getElementById('cc').value = document.getElementById('cc').value+"; ";
+			}
+			else if (event.keyCode === 13){ //if enter clicked
+				document.getElementById('cc').value = document.getElementById('cc').value+" ; ";
+			}
+		});
+		document.getElementById('cci').addEventListener("keyup", function(event){ //add separator ( ; ) between mails
+			if (event.keyCode === 32){ //if space clicked
+				//event.preventDefault();
+				document.getElementById('cci').value = document.getElementById('cci').value+"; ";
+			}
+			else if (event.keyCode === 13){ //if enter clicked
+				document.getElementById('cci').value = document.getElementById('cci').value+" ; ";
+			}
+		});
+		
+		function removeSpaces(elt){
+			let a = elt.replace(/\s/g,'');
+			return a;
+		}
+		
+		function getContent(){ //get email content and send it
+			let mess=document.getElementById('editor').innerHTML;
+			document.getElementById('messCont').value=mess;
+			//alert(document.getElementById('messCont').value);
+			document.getElementById('sendForm').submit(); //envoyer le new mail to ../../includes/myMal.php?opt=isSent
 		}
 	</script>
 		
@@ -110,6 +162,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 			width: 60%;
 			transition: all 0.5s ease;
 		}
+		/*this code is created by Josué - jose.init.dev@gmail.com*/
 		.to {
 			width: 100px;
 			transition: all 0.5s ease;

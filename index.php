@@ -29,6 +29,13 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 	<body>
 		<div class="container-fluid">
 			<div class="row">
+				<?php
+				//----read mails data//-------
+				$mails = file_get_contents('data/recievedMails.json');
+				$mails = json_decode($mails, true);
+				$notRead=0;
+				foreach ($mails as $mail){ if ($mail['read']==false) $notRead++; }
+				?>
 				<!--------left row---------->
 				<div class="col-1 leftRow">
 					<div class="row" style="margin-top:-15px">
@@ -41,13 +48,13 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 							<hr><hr>
 							<button class="fa fa-edit newMess" onclick="writeNewMail()"> nouveau</button><br>
 							<hr>
-							<button class="fa fa-envelope btnIcon"><i>3</i></button><br>
+							<button class="fa fa-envelope btnIcon" onclick="reception()"><i><?php echo $notRead ?></i></button><br>
 							<span>Reception</span>
 							<hr>
-							<button class="fa fa-paper-plane btnIcon"></button><br>
+							<button class="fa fa-paper-plane btnIcon" onclick="sent()"></button><br>
 							<span>Envoyé</span>
 							<hr>
-							<button class="fa fa-trash btnIcon"></button><br>
+							<button class="fa fa-trash btnIcon" onclick="draft()"></button><br>
 							<span>Brouillon</span>
 							<hr>
 							<button class="fa fa-users btnIcon"></button><br>
@@ -64,141 +71,45 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 				<div class="col-3 centerRow">
 					<input type="text" name="search" required="" placeholder="Requette + Entrer" class="form-control">
 					<br>
-					<h6><b>Boite de réception</b></h6>
-					<div class="entity">
-						<div class="row mailEntity" onclick="readIt()">
-							<div class="col-2">
-								<img src="img/gmail.png" class="rounded-circle img-fluid">
-							</div>
-							<div class="col-10">
-								<h6><b>Janette Benisse</b></h6>
-								<span><b>Objet:</b> Travail de cet aprem</span><br>
-								<i>Lorem ipsum dolor sit amet, consectetur ...</i>
-							</div>
-							<b class="fa fa-circle notRead"></b>
-						</div>
-					</div>
-					<div class="entity">
-						<div class="row mailEntity">
-							<div class="col-2">
-								<img src="img/gmail.png" class="rounded-circle img-fluid">
-							</div>
-							<div class="col-10">
-								<h6><b>Janette Benisse</b></h6>
-								<span><b>Objet:</b> Travail de cet aprem</span><br>
-								<i>Lorem ipsum dolor sit amet, consectetur ...</i>
-							</div>
-							<b class="fa fa-circle notRead"></b>
-						</div>
-					</div>
-					<div class="entity">
-						<div class="row mailEntity">
-							<div class="col-2">
-								<img src="img/gmail.png" class="rounded-circle img-fluid">
-							</div>
-							<div class="col-10">
-								<h6><b>Janette Benisse</b></h6>
-								<span><b>Objet:</b> Travail de cet aprem</span><br>
-								<i>Lorem ipsum dolor sit amet, consectetur ...</i>
-							</div>
-							<b class="fa fa-circle notRead"></b>
-						</div>
-					</div>
-					<div class="entity">
-						<div class="row mailEntity2">
-							<div class="col-2">
-								<img src="img/gmail.png" class="rounded-circle img-fluid">
-							</div>
-							<div class="col-10">
-								<h6><b>Janette Benisse</b></h6>
-								<span><b>Objet:</b> Travail de cet aprem</span><br>
-								<i>Lorem ipsum dolor sit amet, consectetur ...</i>
-							</div>
-						</div>
-					</div>
-					<div class="entity">
-						<div class="row mailEntity2">
-							<div class="col-2">
-								<img src="img/gmail.png" class="rounded-circle img-fluid">
-							</div>
-							<div class="col-10">
-								<h6><b>Janette Benisse</b></h6>
-								<span><b>Objet:</b> Travail de cet aprem</span><br>
-								<i>Lorem ipsum dolor sit amet, consectetur ...</i>
-							</div>
-						</div>
-					</div>
-					<div class="entity">
-						<div class="row mailEntity2">
-							<div class="col-2">
-								<img src="img/gmail.png" class="rounded-circle img-fluid">
-							</div>
-							<div class="col-10">
-								<h6><b>Janette Benisse</b></h6>
-								<span><b>Objet:</b> Travail de cet aprem</span><br>
-								<i>Lorem ipsum dolor sit amet, consectetur ...</i>
-							</div>
-						</div>
-					</div>
-					<div class="entity">
-						<div class="row mailEntity2">
-							<div class="col-2">
-								<img src="img/gmail.png" class="rounded-circle img-fluid">
-							</div>
-							<div class="col-10">
-								<h6><b>Janette Benisse</b></h6>
-								<span><b>Objet:</b> Travail de cet aprem</span><br>
-								<i>Lorem ipsum dolor sit amet, consectetur ...</i>
-							</div>
-						</div>
-					</div>
-					<div class="entity">
-						<div class="row mailEntity2">
-							<div class="col-2">
-								<img src="img/gmail.png" class="rounded-circle img-fluid">
-							</div>
-							<div class="col-10">
-								<h6><b>Janette Benisse</b></h6>
-								<span><b>Objet:</b> Travail de cet aprem</span><br>
-								<i>Lorem ipsum dolor sit amet, consectetur ...</i>
-							</div>
-						</div>
-					</div>
-					<div class="entity">
-						<div class="row mailEntity2">
-							<div class="col-2">
-								<img src="img/gmail.png" class="rounded-circle img-fluid">
-							</div>
-							<div class="col-10">
-								<h6><b>Janette Benisse</b></h6>
-								<span><b>Objet:</b> Travail de cet aprem</span><br>
-								<i>Lorem ipsum dolor sit amet, consectetur ...</i>
-							</div>
-						</div>
-					</div>
-					<div class="entity">
-						<div class="row mailEntity2">
-							<div class="col-2">
-								<img src="img/gmail.png" class="rounded-circle img-fluid">
-							</div>
-							<div class="col-10">
-								<h6><b>Janette Benisse</b></h6>
-								<span><b>Objet:</b> Travail de cet aprem</span><br>
-								<i>Lorem ipsum dolor sit amet, consectetur ...</i>
-							</div>
-						</div>
-					</div>
-					<div class="entity">
-						<div class="row mailEntity2">
-							<div class="col-2">
-								<img src="img/gmail.png" class="rounded-circle img-fluid">
-							</div>
-							<div class="col-10">
-								<h6><b>Janette Benisse</b></h6>
-								<span><b>Objet:</b> Travail de cet aprem</span><br>
-								<i>Lorem ipsum dolor sit amet, consectetur ...</i>
-							</div>
-						</div>
+					<div id="centerBody">
+						<h6><b>Boite de réception <i style="color:orange"><?php echo $notRead ?></i></b></h6>
+						<?php
+						for ($i=sizeof($mails)-1; $i>=0; $i--){
+							//echo $mails[$i]['object'];
+							if ($mails[$i]['read']==false){
+								?>
+								<div class="entity">
+									<div class="row mailEntity" onclick="readIt(<?php echo $i ?>)">
+										<div class="col-2">
+											<img src="img/<?php echo $mails[$i]['authorPic'] ?>" class="rounded-circle img-fluid">
+										</div>
+										<div class="col-10">
+											<h6><b><?php echo $mails[$i]['author'] ?></b></h6>
+											<span><b>Objet:</b> <?php echo $mails[$i]['object'] ?></span><br>
+											<i><?php echo substr($mails[$i]['message'],0,35).'...' ?></i>
+										</div>
+										<b class="fa fa-circle notRead"></b>
+									</div>
+								</div>
+								<?php
+							}else{
+								?>
+								<div class="entity">
+									<div class="row mailEntity2" onclick="readIt(<?php echo $i ?>)">
+										<div class="col-2">
+											<img src="img/<?php echo $mails[$i]['authorPic'] ?>" class="rounded-circle img-fluid">
+										</div>
+										<div class="col-10">
+											<h6><b><?php echo $mails[$i]['author'] ?></b></h6>
+											<span><b>Objet:</b> <?php echo $mails[$i]['object'] ?></span><br>
+											<i><?php echo substr($mails[$i]['message'],0,35).'...' ?></i>
+										</div>
+									</div>
+								</div>
+								<?php
+							}
+						}
+						?>
 					</div>
 				</div>
 				<!--------//center row-------->
@@ -206,11 +117,8 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 				<div class="col-8 rightRow">
 					<div class="row">
 						<div class="col-12 bodyTop">
-							<ul class="nav nav-tabs justify-content-end">
-								<li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-reply"> Répondre</b></a></li>
-								<li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-reply-all"> Répondre à tous</b></a></li>
-								<li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-share"> Transférer</b></a></li>
-								<li class="nav-item"><a class="nav-link" href="#"><b class="fas fa-eraser"> Supprimer</b></a></li>
+							<ul class="nav nav-tabs justify-content-end" id="bodyHead">
+								<!------body head-------->
 							</ul>
 						</div>
 						<div class="col-12" id="mailBody">
@@ -218,6 +126,7 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 							<?php include('includes/myMail.php'); ?>
 						</div>
 					</div>
+					<i style="font-size:8px;position:absolute;bottom:1px">&copy; Made by Josué</i>
 				</div>
 				<!--------//right row-------->
 			</div>
@@ -235,16 +144,68 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 				xhttp.open("GET", link, true);
 				xhttp.send();
 			}
+			function ajaxLoad_2(link){
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						document.getElementById("centerBody").innerHTML = this.responseText;
+					}
+				};
+				xhttp.open("GET", link, true);
+				xhttp.send();
+			}
 			//this code is created by Josué - jose.init.dev@gmail.com
 			//---------------------------
 			let readClick=false; //let us know if mail body contents a mail or not
-			function readIt(){
-				if (!readClick){ //no mail in body, so display it
+			let actualId=-1;
+			function readIt(id){
+				if (!readClick || actualId!=id){ //no mail in body, so display it
 					readClick=true;
+					actualId=id;
+					//set as read
+					setAsRead(id);
+					
 					//load includes/displayMail.php with ajax to read the mail content
-					ajaxLoad("includes/myMail.php?opt=readMail");
+					ajaxLoad("includes/myMail.php?opt=readMail&id="+id);
+					document.getElementById('bodyHead').innerHTML='<li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-reply"> Répondre</b></a></li><li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-reply-all"> Répondre à tous</b></a></li><li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-share"> Transférer</b></a></li><li class="nav-item"><a class="nav-link" href="#"><b class="fas fa-eraser"> Supprimer</b></a></li>';
 				}else{ //mail already in body, so hide it
 					readClick=false;
+					actualId=-1;
+					//load includes/displayMail.php with ajax to read the mail content
+					ajaxLoad("includes/myMail.php");
+					document.getElementById('bodyHead').innerHTML='';
+				}
+			}
+			//---------------------------
+			readClick=false; //let us know if mail body contents a mail or not
+			actualId=-1;
+			function readSent(id){
+				if (!readClick || actualId!=id){ //no mail in body, so display it
+					readClick=true;
+					actualId=id;
+					//load includes/displayMail.php with ajax to read the mail content
+					ajaxLoad("includes/myMail.php?opt=readMail&id="+id+"&st=yes"); //yes means it's a sent mail and non une reception
+					document.getElementById('bodyHead').innerHTML='<li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-reply"> Répondre</b></a></li><li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-reply-all"> Répondre à tous</b></a></li><li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-share"> Transférer</b></a></li><li class="nav-item"><a class="nav-link" href="#"><b class="fas fa-eraser"> Supprimer</b></a></li>';
+				}else{ //mail already in body, so hide it
+					readClick=false;
+					actualId=-1;
+					//load includes/displayMail.php with ajax to read the mail content
+					ajaxLoad("includes/myMail.php");
+					document.getElementById('bodyHead').innerHTML='';
+				}
+			}
+			//---------------------------
+			readClick=false; //let us know if mail body contents a mail or not
+			actualId=-1;
+			function readDraft(id){
+				if (!readClick || actualId!=id){ //no mail in body, so display it
+					readClick=true;
+					actualId=id;
+					//load includes/displayMail.php with ajax to read the mail content
+					ajaxLoad("includes/myMail.php?opt=readDraft&id="+id);
+				}else{ //mail already in body, so hide it
+					readClick=false;
+					actualId=-1;
 					//load includes/displayMail.php with ajax to read the mail content
 					ajaxLoad("includes/myMail.php");
 				}
@@ -263,8 +224,48 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 			function home(){
 				window.location.href="index.php";
 			}
+			//---------------------------
+			function setAsRead(id){ //set a mail comme read
+				ajaxLoad("includes/myMail.php?opt=isRead&id="+id);
+				reception(); //reaload aside section (centerRow)
+			}
+			//---------------------------
+			function reception(){ //boite de reception
+				ajaxLoad_2("includes/aside.php");
+			}
+			//---------------------------
+			function sent(){ //sent mails
+				ajaxLoad_2("includes/aside.php?opt=sent");
+			}
+			//---------------------------
+			function draft(){ //draft mails
+				ajaxLoad_2("includes/aside.php?opt=draft");
+			}
+			//---------------------------
+//			function getUrlVars(){ //get url parameters avec JavaScript
+//				var vars = {};
+//				var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+//					vars[key] = value;
+//				});
+//				return vars;
+//			}
+//			let sent=getUrlVars()['sent'];
+//			if (sent=="yes"){ //mail sent
+//				document.getElementById('').
+//			}
+			//---------------------------
 		</script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
+		<div class="spinner-grow" id="loadingPage" style="position:fixed; top:15px; left:15px; width:60px; height:60px; color:orange; z-index:999;"></div>
+		<script>
+		  document.onreadystatechange = function(){
+				if (document.readyState !== "complete"){
+					document.getElementById('loadingPage').style.display = "block";
+				}else{
+					document.getElementById('loadingPage').style.display = "none";
+				}
+			};
+		</script>
 	</body>
 </html>
         
