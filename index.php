@@ -167,7 +167,7 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 					
 					//load includes/displayMail.php with ajax to read the mail content
 					ajaxLoad("includes/myMail.php?opt=readMail&id="+id);
-					document.getElementById('bodyHead').innerHTML='<li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-reply"> Répondre</b></a></li><li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-reply-all"> Répondre à tous</b></a></li><li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-share"> Transférer</b></a></li><li class="nav-item"><a class="nav-link" href="#"><b class="fas fa-eraser"> Supprimer</b></a></li>';
+					document.getElementById('bodyHead').innerHTML='<li class="nav-item"><a class="nav-link" href="#" onclick="reply('+id+', \'recieved\', \'one\')"><b class="fa fa-reply"> Répondre</b></a></li><li class="nav-item"><a class="nav-link" href="#" onclick="reply('+id+', \'recieved\', \'all\')"><b class="fa fa-reply-all"> Répondre à tous</b></a></li><li class="nav-item"><a class="nav-link" href="#" onclick="transfert('+id+', \'recieved\')"><b class="fa fa-share"> Transférer</b></a></li><li class="nav-item"><a class="nav-link" href="#" onclick="supprimer('+id+', \'recieved\')"><b class="fas fa-eraser"> Supprimer</b></a></li>';
 				}else{ //mail already in body, so hide it
 					readClick=false;
 					actualId=-1;
@@ -185,7 +185,7 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 					actualId=id;
 					//load includes/displayMail.php with ajax to read the mail content
 					ajaxLoad("includes/myMail.php?opt=readMail&id="+id+"&st=yes"); //yes means it's a sent mail and non une reception
-					document.getElementById('bodyHead').innerHTML='<li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-reply"> Répondre</b></a></li><li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-reply-all"> Répondre à tous</b></a></li><li class="nav-item"><a class="nav-link" href="#"><b class="fa fa-share"> Transférer</b></a></li><li class="nav-item"><a class="nav-link" href="#"><b class="fas fa-eraser"> Supprimer</b></a></li>';
+					document.getElementById('bodyHead').innerHTML='<li class="nav-item"><a class="nav-link" href="#" onclick="transfert('+id+', \'sent\')"><b class="fa fa-share"> Transférer</b></a></li><li class="nav-item"><a class="nav-link" href="#" onclick="supprimer('+id+', \'sent\')"><b class="fas fa-eraser"> Supprimer</b></a></li>';
 				}else{ //mail already in body, so hide it
 					readClick=false;
 					actualId=-1;
@@ -203,11 +203,13 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 					actualId=id;
 					//load includes/displayMail.php with ajax to read the mail content
 					ajaxLoad("includes/myMail.php?opt=readDraft&id="+id);
+					document.getElementById('bodyHead').innerHTML='<h3 style="color: #fff"><i class="fa fa-th"></i> Mes Brouilons <i class="fa fa-caret-right"></i> <button class="newMess fa fa-eraser" onclick="supprimer('+id+', \'draft\')"> Supprimer</button> <button class="newMess fa fa-trash" onclick="addTrash()"> Brouillon</button></h3>';
 				}else{ //mail already in body, so hide it
 					readClick=false;
 					actualId=-1;
 					//load includes/displayMail.php with ajax to read the mail content
 					ajaxLoad("includes/myMail.php");
+					document.getElementById('bodyHead').innerHTML='';
 				}
 			}
 			//---------------------------
@@ -219,6 +221,7 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 			function writeNewMail(){
 				//load for writing a new mail
 				ajaxLoad("includes/myMail.php?opt=new");
+				document.getElementById('bodyHead').innerHTML='<h3 style="color: #fff"><i class="fa fa-th"></i> Nouveau Message <i class="fa fa-caret-right"></i> <span id="btnElts"><button class="newMess fa fa-eraser" onclick="home()"> Annuler</button> <button class="newMess fa fa-trash" onclick="addTrash()"> Brouillon</button></span></h3>';
 			}
 			//---------------------------
 			function home(){
@@ -254,9 +257,38 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 //				document.getElementById('').
 //			}
 			//---------------------------
+			function addTrash(){ //add mail to draft (i.e je ne veux pas send it so I add it to corbeille)
+				alert("add draft");
+			}
+			//---------------------------
+			function reply(id, type, howMany){ //reply to mail from data type with this id
+				//alert(id+" -- "+type+" -- "+howMany);
+				//one => reply to sender and all=>reply to all
+				ajaxLoad("includes/myMail.php?opt=reply&id="+id+"&type="+type+"&howMany="+howMany);
+				document.getElementById('bodyHead').innerHTML='<h3 style="color: #fff"><i class="fa fa-th"></i> Répondre <i class="fa fa-caret-right"></i> <span id="btnElts"><button class="newMess fa fa-eraser" onclick="home()"> Annuler</button></span></h3>';
+			}
+			//---------------------------
+			function transfert(id, type){ //share a mail from data type with this id
+				//alert(id+" -- "+type);
+				ajaxLoad("includes/myMail.php?opt=share&id="+id+"&type="+type);
+				document.getElementById('bodyHead').innerHTML='<h3 style="color: #fff"><i class="fa fa-th"></i> Transférer <i class="fa fa-caret-right"></i> <span id="btnElts"><button class="newMess fa fa-eraser" onclick="home()"> Annuler</button></span></h3>';
+			}
+			//---------------------------
+			function supprimer(id, type){ //delete a mail from data type with this id
+				//alert(id+" -- "+type);
+				ajaxLoad("includes/myMail.php?opt=suppr&id="+id+"&type="+type);
+				if (type=="sent"){
+					ajaxLoad_2("includes/aside.php?opt=sent"); //reload sent mails list
+				}else if (type=="recieved"){
+					ajaxLoad_2("includes/aside.php"); //reload recieved mails list
+				}else if (type=="draft"){
+					ajaxLoad_2("includes/aside.php?opt=draft"); //reload draft mails list
+				}
+			}
+			//---------------------------
 		</script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
-		<div class="spinner-grow" id="loadingPage" style="position:fixed; top:15px; left:15px; width:60px; height:60px; color:orange; z-index:999;"></div>
+		<div class="spinner-grow" id="loadingPage" style="position:fixed; top:15px; right:15px; width:60px; height:60px; color:orange; z-index:999;"></div>
 		<script>
 		  document.onreadystatechange = function(){
 				if (document.readyState !== "complete"){

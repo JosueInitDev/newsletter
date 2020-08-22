@@ -54,10 +54,8 @@ switch ($option){
 	case 'new': //write new mail
 		?>
 		<div>
-			<h2 style="color: #1E5B89"><i class="fa fa-th"></i> Nouveau Message <i class="fa fa-caret-right"></i> <button class="newMess fa fa-eraser" onclick="home()"> Annuler</button> <button class="newMess fa fa-trash" onclick="addTrash()"> Brouillon</button></h2>
-			
+			<hr>
 			<iframe src="includes/joEditor/joEditor.html" style="width:100%; height:90vh; border:none;"></iframe>
-			
 		</div>
 		<?php
 	break;
@@ -75,10 +73,8 @@ switch ($option){
 		//echo $id;
 		?>
 		<div>
-			<h2 style="color: #1E5B89"><i class="fa fa-th"></i> Mes Brouilons <i class="fa fa-caret-right"></i> <button class="newMess fa fa-eraser" onclick="home()"> Supprimer</button> <button class="newMess fa fa-trash" onclick="addTrash()"> Brouillon</button></h2>
-			
+			<hr>
 			<iframe src="includes/joEditor/joEditor.html?id=<?php echo $id ?>" style="width:100%; height:90vh; border:none;"></iframe>
-			
 		</div>
 		<?php
 	break;
@@ -111,8 +107,95 @@ switch ($option){
 		$sentMails=json_encode($sentMails);
 		file_put_contents('../data/sentMails.json', $sentMails);
 		?>
-		<div style="background:silver; border-radius:15px; padding:20px; margin:30px;">
+		<div style="background:rgba(0,255,0,0.1); border-radius:15px; padding:20px; margin:30px;">
 			<center>Votre mail a été envoyé avec succès !</center>
+		</div>
+		<?php
+	break;
+	case 'suppr': //delete a mail
+		$id = (int) (isset($_GET['id']))?(htmlspecialchars($_GET['id'])):'';
+		$type = (isset($_GET['type']))?(htmlspecialchars($_GET['type'])):'';
+		
+		if ($type=="sent"){ //delete a sent mail
+			$elt = file_get_contents('../data/sentMails.json');
+			$elt = json_decode($elt, true);
+			array_splice($elt, $id, 1);
+			
+			$elt=json_encode($elt);
+			//print_r($elt);
+			file_put_contents('../data/sentMails.json', $elt);
+		}
+		else if ($type=="draft"){ //delete a draft mail
+			/*****$elt = file_get_contents('../data/draftMails.json');
+			$elt = json_decode($elt, true);
+			array_splice($elt, $id, 1);
+			
+			$elt=json_encode($elt);
+			//print_r($elt);
+			file_put_contents('../data/draftMails.json', $elt); ****/
+		}
+		else if ($type=="recieved"){ //delete a reception mail
+			$elt = file_get_contents('../data/recievedMails.json');
+			$elt = json_decode($elt, true);
+			array_splice($elt, $id, 1);
+			
+			$elt=json_encode($elt);
+			file_put_contents('../data/recievedMails.json', $elt);
+		}
+		?>
+		<div style="background:rgba(255,0,0,0.1); border-radius:15px; padding:20px; margin:30px;">
+			<center>Mail supprimé avec succès !</center>
+		</div>
+		<?php
+	break;
+	case 'reply':
+		$id = (int) (isset($_GET['id']))?(htmlspecialchars($_GET['id'])):''; //mail id
+		$type = (isset($_GET['type']))?(htmlspecialchars($_GET['type'])):''; //which data to read ? (sentMails, draftMails or recievedMails)
+		$howMany = (isset($_GET['howMany']))?(htmlspecialchars($_GET['howMany'])):''; //one => reply to sender and all=>reply to all
+		if ($type=="recieved"){
+			if ($howMany=="one"){
+				$elt = file_get_contents('../data/recievedMails.json');
+				$elt = json_decode($elt, true);
+				$rpl = $elt[$id]['authorMail'];
+				$obj = $elt[$id]['object'];
+				$rplcc = '';
+				$rplcci = '';
+				//echo $elt;
+			}else if ($howMany=="all"){
+				$elt = file_get_contents('../data/recievedMails.json');
+				$elt = json_decode($elt, true);
+				$rpl = $elt[$id]['authorMail'].' ; '.$elt[$id]['to'];
+				$obj = $elt[$id]['object'];
+				$rplcc = $elt[$id]['cc'];
+				$rplcci = $elt[$id]['cci'];
+			}
+			?>
+			<div>
+				<hr>
+				<iframe src="includes/joEditor/joEditor.html?rpl=<?php echo $rpl ?>&obj=<?php echo $obj ?>&rplcc=<?php echo $rplcc ?>&rplcci=<?php echo $rplcci ?>" style="width:100%; height:90vh; border:none;"></iframe>
+			</div>
+			<?php
+		}
+	break;
+	case 'share': //transférer a mail
+		$id = (int) (isset($_GET['id']))?(htmlspecialchars($_GET['id'])):''; //mail id
+		$type = (isset($_GET['type']))?(htmlspecialchars($_GET['type'])):''; //which data to read ? (sentMails, draftMails or recievedMails)
+		if ($type=="recieved"){
+			$elt = file_get_contents('../data/recievedMails.json');
+			$elt = json_decode($elt, true);
+			$obj = $elt[$id]['object'];
+			$mess = $elt[$id]['message'];
+		}
+		else if ($type=="sent"){
+			$elt = file_get_contents('../data/sentMails.json');
+			$elt = json_decode($elt, true);
+			$obj = $elt[$id]['object'];
+			$mess = $elt[$id]['message'];
+		}
+		?>
+		<div>
+			<hr>
+			<iframe src="includes/joEditor/joEditor.html?obj=<?php echo $obj ?>&mess=<?php echo $mess ?>" style="width:100%; height:90vh; border:none;"></iframe>
 		</div>
 		<?php
 	break;

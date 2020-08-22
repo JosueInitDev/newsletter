@@ -55,6 +55,18 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 				return vars;
 			}
 			let id=parseInt(getUrlVars()['id']);
+			//---------------reply to//-------------
+			let objto=getUrlVars()['obj']; //if a reply query exists
+			let replyto=getUrlVars()['rpl']; //if a reply query exists
+			let replycc=getUrlVars()['rplcc']; //if a reply query exists
+			let replycci=getUrlVars()['rplcci']; //if a reply query exists
+			objto = objto.split('%20').join(' ');
+			replyto = replyto.split('%20').join(' ');
+			replycc = replycc.split('%20').join(' ');
+			replycci = replycci.split('%20').join(' ');
+			//---------------share//----------------
+			/*let mess=getUrlVars()['mess']; //gonna use objto above
+			mess = mess.split('%20').join(' ');*/
 			//console.log(draft[0].author);
 			if (id>=0){
 				document.getElementById('obj').value=draft[id].object;
@@ -63,6 +75,16 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 				document.getElementById('cci').value=draft[id].cci;
 				document.getElementById('editor').innerHTML=draft[id].message;
 			}
+			if (replyto.length>4){
+				document.getElementById('obj').value="Re: "+objto;
+				document.getElementById('to').value=replyto;
+				document.getElementById('cc').value=replycc;
+				document.getElementById('cci').value=replycci;
+			}
+			/*if (mess.length>2){
+				document.getElementById('obj').value="Tr: "+objto;
+				document.getElementById('editor').innerHTML=mess;
+			}*/
 		</script>
 		<!-----//set default values si they exists--------->
 	</main>

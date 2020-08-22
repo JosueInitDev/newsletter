@@ -2,7 +2,7 @@
 $option = (isset($_GET['opt']))?(htmlspecialchars($_GET['opt'])):'';
 
 switch ($option){
-	case 'sent':
+	case 'sent': //sent mails
 		//----read sent mails data//-------
 		$mails = file_get_contents('../data/sentMails.json');
 		$mails = json_decode($mails, true);
@@ -27,7 +27,7 @@ switch ($option){
 			<?php
 		}
 	break;
-	case 'draft':
+	case 'draft': //draft mails
 		//----read draft mails data//-------
 		$mails = file_get_contents('../data/draftMails.json');
 		$a=explode('draft=', $mails);
@@ -54,7 +54,7 @@ switch ($option){
 			<?php
 		}
 	break;
-	default:
+	default: //recieved mails
 		//----read mails data//-------
 		$mails = file_get_contents('../data/recievedMails.json');
 		$mails = json_decode($mails, true);
