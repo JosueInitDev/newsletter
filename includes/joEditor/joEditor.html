@@ -126,7 +126,11 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 			let mess=document.getElementById('editor').innerHTML;
 			document.getElementById('messCont').value=mess;
 			//alert(document.getElementById('messCont').value);
-			document.getElementById('sendForm').submit(); //envoyer le new mail to ../../includes/myMal.php?opt=isSent
+			if (document.getElementById('to').value.length<4){
+				alert("Merci d'enter un destinataire svp. A qui envoyez-vous ce mail ?");
+			}else{
+				document.getElementById('sendForm').submit(); //envoyer le new mail to ../../includes/myMal.php?opt=isSent
+			}
 		}
 	</script>
 		
