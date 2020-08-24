@@ -60,10 +60,13 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 			let replyto=getUrlVars()['rpl']; //if a reply query exists
 			let replycc=getUrlVars()['rplcc']; //if a reply query exists
 			let replycci=getUrlVars()['rplcci']; //if a reply query exists
-			objto = objto.split('%20').join(' ');
-			replyto = replyto.split('%20').join(' ');
-			replycc = replycc.split('%20').join(' ');
-			replycci = replycci.split('%20').join(' ');
+			let group=getUrlVars()['group']; //if a reply query exists (send a mail to a group)
+			
+			if (objto != undefined){ objto = objto.split('%20').join(' '); }
+			if (replyto != undefined){ replyto = replyto.split('%20').join(' '); }
+			if (replycc != undefined){ replycc = replycc.split('%20').join(' '); }
+			if (replycci != undefined){ replycci = replycci.split('%20').join(' '); }
+			if (group != undefined){ group = group.split('%20').join(' '); }
 			//---------------share//----------------
 			/*let mess=getUrlVars()['mess']; //gonna use objto above
 			mess = mess.split('%20').join(' ');*/
@@ -75,11 +78,14 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 				document.getElementById('cci').value=draft[id].cci;
 				document.getElementById('editor').innerHTML=draft[id].message;
 			}
-			if (replyto.length>4){
+			if (replyto != undefined){
 				document.getElementById('obj').value="Re: "+objto;
 				document.getElementById('to').value=replyto;
 				document.getElementById('cc').value=replycc;
 				document.getElementById('cci').value=replycci;
+			}
+			if (group != undefined){
+				document.getElementById('to').value=group;
 			}
 			/*if (mess.length>2){
 				document.getElementById('obj').value="Tr: "+objto;

@@ -57,11 +57,11 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 							<button class="fa fa-trash btnIcon" onclick="draft()"></button><br>
 							<span>Brouillon</span>
 							<hr>
-							<button class="fa fa-users btnIcon"></button><br>
+							<button class="fa fa-users btnIcon" onclick="groups()"></button><br>
 							<span>Groupes</span>
 							<hr><hr>
 							<div class="leftBottom">
-								<button title="Paramètres"><i class="fa fa-cog fa-spin"></i></button> | <button title="Calendrier" onclick="calendar()"><i class="far fa-calendar-alt"></i></button>
+								<button title="Paramètres" onclick="parametres()"><i class="fa fa-cog fa-spin"></i></button> | <button title="Calendrier" onclick="calendar()"><i class="far fa-calendar-alt"></i></button>
 							</div>
 						</div>
 					</div>
@@ -132,9 +132,19 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 			</div>
 		</div>
 		
+		<div class="loader" id="joSpinner"></div>
+		
 		<script>
 			//---------------------------
+			function loadSpinner(){
+				setTimeout(function() { //-------wait 1sec so we can voir spinner effect//-----------
+					document.getElementById('joSpinner').style.display='none';
+				}, 800);
+			}
+			//---------------------------
 			function ajaxLoad(link){
+				loadSpinner();
+				
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function() {
 					if (this.readyState == 4 && this.status == 200) {
@@ -185,7 +195,7 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 					actualId=id;
 					//load includes/displayMail.php with ajax to read the mail content
 					ajaxLoad("includes/myMail.php?opt=readMail&id="+id+"&st=yes"); //yes means it's a sent mail and non une reception
-					document.getElementById('bodyHead').innerHTML='<li class="nav-item"><a class="nav-link" href="#" onclick="transfert('+id+', \'sent\')"><b class="fa fa-share"> Transférer</b></a></li><li class="nav-item"><a class="nav-link" href="#" onclick="supprimer('+id+', \'sent\')"><b class="fas fa-eraser"> Supprimer</b></a></li>';
+					document.getElementById('bodyHead').innerHTML='<li class="nav-item"><a class="nav-link" href="#" onclick="reply('+id+', \'sent\', \'one\')"><b class="fa fa-reply"> Répondre</b></a></li><li class="nav-item"><a class="nav-link" href="#" onclick="reply('+id+', \'sent\', \'all\')"><b class="fa fa-reply-all"> Répondre à tous</b></a></li><li class="nav-item"><a class="nav-link" href="#" onclick="transfert('+id+', \'sent\')"><b class="fa fa-share"> Transférer</b></a></li><li class="nav-item"><a class="nav-link" href="#" onclick="supprimer('+id+', \'sent\')"><b class="fas fa-eraser"> Supprimer</b></a></li>';
 				}else{ //mail already in body, so hide it
 					readClick=false;
 					actualId=-1;
@@ -218,10 +228,14 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 				ajaxLoad("includes/myMail.php?opt=calendar");
 			}
 			//---------------------------
-			function writeNewMail(){
-				//load for writing a new mail
+			function writeNewMail(){ //load for writing a new mail
 				ajaxLoad("includes/myMail.php?opt=new");
-				document.getElementById('bodyHead').innerHTML='<h3 style="color: #fff"><i class="fa fa-th"></i> Nouveau Message <i class="fa fa-caret-right"></i> <span id="btnElts"><button class="newMess fa fa-eraser" onclick="home()"> Annuler</button> <button class="newMess fa fa-trash" onclick="addTrash()"> Brouillon</button></span></h3>';
+				document.getElementById('bodyHead').innerHTML='<h3 style="color: #fff"><i class="fa fa-th"></i> Nouveau Message <i class="fa fa-caret-right"></i> <span id="btnElts"><button class="newMess fa fa-home" onclick="home()"> Annuler</button> <button class="newMess fa fa-trash" onclick="addTrash()"> Brouillon</button></span></h3>';
+			}
+			//---------------------------
+			function writeGroupMail(id){ //load for writing a new group mail
+				ajaxLoad("includes/myMail.php?opt=newGroupMail&id="+id);
+				document.getElementById('bodyHead').innerHTML='<h3 style="color: #fff"><i class="fa fa-th"></i> Nouveau Message au Groupe <i class="fa fa-caret-right"></i> <span id="btnElts"><button class="newMess fa fa-home" onclick="home()"> Annuler</button> <button class="newMess fa fa-trash" onclick="addTrash()"> Brouillon</button></span></h3>';
 			}
 			//---------------------------
 			function home(){
@@ -245,18 +259,6 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 				ajaxLoad_2("includes/aside.php?opt=draft");
 			}
 			//---------------------------
-//			function getUrlVars(){ //get url parameters avec JavaScript
-//				var vars = {};
-//				var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-//					vars[key] = value;
-//				});
-//				return vars;
-//			}
-//			let sent=getUrlVars()['sent'];
-//			if (sent=="yes"){ //mail sent
-//				document.getElementById('').
-//			}
-			//---------------------------
 			function addTrash(){ //add mail to draft (i.e je ne veux pas send it so I add it to corbeille)
 				alert("add draft");
 			}
@@ -265,13 +267,13 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 				//alert(id+" -- "+type+" -- "+howMany);
 				//one => reply to sender and all=>reply to all
 				ajaxLoad("includes/myMail.php?opt=reply&id="+id+"&type="+type+"&howMany="+howMany);
-				document.getElementById('bodyHead').innerHTML='<h3 style="color: #fff"><i class="fa fa-th"></i> Répondre <i class="fa fa-caret-right"></i> <span id="btnElts"><button class="newMess fa fa-eraser" onclick="home()"> Annuler</button></span></h3>';
+				document.getElementById('bodyHead').innerHTML='<h3 style="color: #fff"><i class="fa fa-th"></i> Répondre <i class="fa fa-caret-right"></i> <span id="btnElts"><button class="newMess fa fa-home" onclick="home()"> Annuler</button></span></h3>';
 			}
 			//---------------------------
 			function transfert(id, type){ //share a mail from data type with this id
 				//alert(id+" -- "+type);
 				ajaxLoad("includes/myMail.php?opt=share&id="+id+"&type="+type);
-				document.getElementById('bodyHead').innerHTML='<h3 style="color: #fff"><i class="fa fa-th"></i> Transférer <i class="fa fa-caret-right"></i> <span id="btnElts"><button class="newMess fa fa-eraser" onclick="home()"> Annuler</button></span></h3>';
+				document.getElementById('bodyHead').innerHTML='<h3 style="color: #fff"><i class="fa fa-th"></i> Transférer <i class="fa fa-caret-right"></i> <span id="btnElts"><button class="newMess fa fa-home" onclick="home()"> Annuler</button></span></h3>';
 			}
 			//---------------------------
 			function supprimer(id, type){ //delete a mail from data type with this id
@@ -283,6 +285,24 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 					ajaxLoad_2("includes/aside.php"); //reload recieved mails list
 				}else if (type=="draft"){
 					ajaxLoad_2("includes/aside.php?opt=draft"); //reload draft mails list
+				}
+			}
+			//---------------------------
+			function parametres(){ //display and modifier SMTP infos
+				ajaxLoad("includes/myMail.php?opt=parametres");
+			}
+			//---------------------------
+			function groups(){ //display groups into aside (center) section
+				ajaxLoad_2("includes/aside.php?opt=groups");
+			}
+			//---------------------------
+			function displayGroup(id, action='none', effacer='none'){ //display group info into right section
+				if (action=="newGroup"){
+					ajaxLoad("includes/myMail.php?opt=group&id="+id+"&act=newGroup");
+				}else if (effacer=='delete'){
+					ajaxLoad("includes/myMail.php?opt=group&id="+id+"&delete=true");
+				}else{
+					ajaxLoad("includes/myMail.php?opt=group&id="+id);
 				}
 			}
 			//---------------------------

@@ -54,6 +54,33 @@ switch ($option){
 			<?php
 		}
 	break;
+	case 'groups':
+		//----read groups data//-------
+		$mails = file_get_contents('../data/groups.json');
+		$mails = json_decode($mails, true);
+		?>
+		<h6><b>Groupes Newsletter <i style="color:orange"><?php echo sizeof($mails) ?></i></b> | <button class="newMess fa fa-plus" onclick="displayGroup('-1', 'newGroup')"> nouveau group</button></h6>
+		<?php
+		$j=1;
+		for ($i=sizeof($mails)-1; $i>=0; $i--){
+			//echo $mails[$i]['object'];
+			?>
+			<div class="entity">
+				<div class="row mailEntity2" onclick="displayGroup(<?php echo $i ?>)">
+					<div class="col-2">
+						<?php echo "GRP".$j ?>
+					</div>
+					<div class="col-10">
+						<h6><b><?php echo $mails[$i]['name'] ?></b></h6>
+						<span><b>Créé le</b> <?php echo $mails[$i]['date'] ?></span><br>
+						<i><?php echo substr($mails[$i]['description'],0,35).'...' ?></i>
+					</div>
+				</div>
+			</div>
+			<?php
+			$j++;
+		}
+	break;
 	default: //recieved mails
 		//----read mails data//-------
 		$mails = file_get_contents('../data/recievedMails.json');

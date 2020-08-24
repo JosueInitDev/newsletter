@@ -1,6 +1,1 @@
-{
-	"host": "yourSmtpHost",
-	"user": "yourSmtpUserName@example.com",
-	"password": "YourSmtpPassword",
-	"port": "youSmtpPort (set a number and remove quots)"
-}
+{"host":"yourSmtpHost","user":"yourSmtpUserName@example.com","password":"YourSmtpPassword","port":"25"}
