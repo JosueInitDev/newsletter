@@ -106,10 +106,14 @@ switch ($option){
 		//print_r($sentMails);
 		$sentMails=json_encode($sentMails);
 		file_put_contents('../data/sentMails.json', $sentMails);
+		//send the mail with SMTP (phpmailer)
+		
 		?>
 		<audio src="../img/notif.mp3" autoplay></audio>
 		<div style="background:rgba(0,255,0,0.1); border-radius:15px; padding:20px; margin:30px;">
-			<center>Votre mail a été envoyé avec succès !</center>
+			<center>
+				<?php include('../phpmailer/sendMyMail.php'); ?>
+			</center>
 		</div>
 		<?php
 	break;
@@ -274,7 +278,7 @@ switch ($option){
 								<textarea class="form-control" name="desc" required="" rows="3" maxlength="245"><?php echo $data[$id]['description'] ?></textarea>
 							</div>
 							<div class="form-group">
-								<label for="mails">Mails</label>
+								<label for="mails">Mails (séparés par des ; )</label>
 								<input type="text" class="form-control" id="mails" name="mails" value="<?php echo $data[$id]['mails'] ?>" required="">
 							</div>
 							<input type="hidden" name="id" value="<?php echo $id ?>">
@@ -350,7 +354,7 @@ switch ($option){
 								<textarea class="form-control" name="desc" required="" rows="3" placeholder="Description du group" maxlength="245"></textarea>
 							</div>
 							<div class="form-group">
-								<label for="mails">Mails</label>
+								<label for="mails">Mails (séparés par des ; )</label>
 								<input type="text" class="form-control" id="mails" name="mails" placeholder="Liste des adresses mails (séparées par des ; )" required="">
 							</div>
 							<input type="hidden" name="id" value="<?php echo $id ?>">

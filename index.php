@@ -86,7 +86,7 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 										<div class="col-10">
 											<h6><b><?php echo $mails[$i]['author'] ?></b></h6>
 											<span><b>Objet:</b> <?php echo $mails[$i]['object'] ?></span><br>
-											<i><?php echo substr($mails[$i]['message'],0,35).'...' ?></i>
+											<i><?php echo htmlspecialchars_decode(substr($mails[$i]['message'],0,35)).'...' ?></i>
 										</div>
 										<b class="fa fa-circle notRead"></b>
 									</div>
@@ -102,7 +102,7 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 										<div class="col-10">
 											<h6><b><?php echo $mails[$i]['author'] ?></b></h6>
 											<span><b>Objet:</b> <?php echo $mails[$i]['object'] ?></span><br>
-											<i><?php echo substr($mails[$i]['message'],0,35).'...' ?></i>
+											<i><?php echo htmlspecialchars_decode(substr($mails[$i]['message'],0,35)).'...' ?></i>
 										</div>
 									</div>
 								</div>
