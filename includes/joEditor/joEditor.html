@@ -31,7 +31,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 				<input type="hidden" id="messCont" name="messCont" value="">
 			</form>
 			<hr>
-			<label>Message</label>
+			<label>Message ::: <button onclick="addTrash()" style="background:silver; border-radius: 7px; cursor:pointer; padding: 5px; padding-left:20px; padding-right:20px;"> +Brouillon</button></label>
 		</div>
 		<hr>
 		<div class="centered">
@@ -39,13 +39,12 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 				<div class="toolbar-container"></div>
 				<div class="content-container">
 					<div id="editor">
-						<!------mails content here------->
+						<!------mails content loads here------->
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-----set default values si they exists--------->
-		<script type="text/javascript" src="../../data/draftMails.json"></script> <!--include draft mails-->
 		<script>
 			function getUrlVars(){ //get url parameters avec JavaScript
 				var vars = {};
@@ -61,22 +60,27 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 			let replycc=getUrlVars()['rplcc']; //if a reply query exists
 			let replycci=getUrlVars()['rplcci']; //if a reply query exists
 			let group=getUrlVars()['group']; //if a reply query exists (send a mail to a group)
+			let mess=getUrlVars()['mess']; //if a reply query exists (share a mail, this is the content to share) (gonna use objto above)
 			
 			if (objto != undefined){ objto = objto.split('%20').join(' '); }
 			if (replyto != undefined){ replyto = replyto.split('%20').join(' '); }
 			if (replycc != undefined){ replycc = replycc.split('%20').join(' '); }
 			if (replycci != undefined){ replycci = replycci.split('%20').join(' '); }
 			if (group != undefined){ group = group.split('%20').join(' '); }
+			if (mess != undefined){
+				mess = mess.split('%20').join(' ');
+				mess = mess.split('%3C').join('<');
+				mess = mess.split('%3E').join('>');
+			}
 			//---------------share//----------------
-			/*let mess=getUrlVars()['mess']; //gonna use objto above
-			mess = mess.split('%20').join(' ');*/
-			//console.log(draft[0].author);
 			if (id>=0){
-				document.getElementById('obj').value=draft[id].object;
-				document.getElementById('to').value=draft[id].to;
-				document.getElementById('cc').value=draft[id].cc;
-				document.getElementById('cci').value=draft[id].cci;
-				document.getElementById('editor').innerHTML=draft[id].message;
+				$.getJSON( "../../data/draftsMails.json", function( draft ) { //read external json file with ajax
+					document.getElementById('obj').value=draft[id].object;
+					document.getElementById('to').value=draft[id].to;
+					document.getElementById('cc').value=draft[id].cc;
+					document.getElementById('cci').value=draft[id].cci;
+					document.getElementById('editor').innerHTML=draft[id].message;
+				});
 			}
 			if (replyto != undefined){
 				document.getElementById('obj').value="Re: "+objto;
@@ -87,10 +91,26 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 			if (group != undefined){
 				document.getElementById('to').value=group;
 			}
-			/*if (mess.length>2){
+			if (mess != undefined){ //share a mail (content exists)
 				document.getElementById('obj').value="Tr: "+objto;
 				document.getElementById('editor').innerHTML=mess;
-			}*/
+			}
+			
+			//---------------------------
+			function addTrash(){ //add mail to draft (i.e je ne veux pas send it so I add it to corbeille)
+				let oldDraft='no';
+				if (id != undefined && id>=0){ //edit old draft, so no need to create a new draft
+					oldDraft=id;
+				}
+				let obj = document.getElementById('obj').value;
+				let to = document.getElementById('to').value;
+				let cc = document.getElementById('cc').value;
+				let cci = document.getElementById('cci').value;
+				let mess = document.getElementById('editor').innerHTML;
+				
+				window.location.href="../../includes/myMail.php?opt=addTrash&obj="+obj+"&to="+to+"&cc="+cc+"&cci="+cci+"&mess="+mess+"&oldDraft="+oldDraft;
+			}
+			//---------------------------
 		</script>
 		<!-----//set default values si they exists--------->
 	</main>

@@ -78,15 +78,14 @@ switch ($option){
 		</div>
 		<?php
 	break;
-	case 'isSent':
+	case 'isSent': //send a mail
 		$obj = (isset($_POST['obj']))?(htmlspecialchars($_POST['obj'])):'';
 		$to = (isset($_POST['to']))?(htmlspecialchars($_POST['to'])):'';
 		$cc = (isset($_POST['cc']))?(htmlspecialchars($_POST['cc'])):'';
 		$cci = (isset($_POST['cci']))?(htmlspecialchars($_POST['cci'])):'';
 		$mess = (isset($_POST['messCont']))?(htmlspecialchars($_POST['messCont'])):'';
+		//not set yet: $id = (int) (isset($_POST['draftId']))?(htmlspecialchars($_POST['draftId'])):0; //$id != 0 means we sent a draft mail and should delete it from draft mails
 		
-		//$auth = (isset($_POST['author']))?(htmlspecialchars($_POST['author'])):''; //uncomment if info sent from ../includes/joEditor/joEditor.html
-		//$authMail = (isset($_POST['authMail']))?(htmlspecialchars($_POST['authMail'])):''; //uncomment if info sent from ../includes/joEditor/joEditor.html
 		$elt = file_get_contents('../phpmailer/data.json'); //contient your SMTP infos
 		$elt = json_decode($elt, true);
 		$auth = explode("@", $elt['user'])[0]; //get your name before @ from your SMTP infos saved into ../phpmailer/data.json
@@ -131,13 +130,12 @@ switch ($option){
 			file_put_contents('../data/sentMails.json', $elt);
 		}
 		else if ($type=="draft"){ //delete a draft mail
-			/*****$elt = file_get_contents('../data/draftMails.json');
+			$elt = file_get_contents('../data/draftsMails.json');
 			$elt = json_decode($elt, true);
 			array_splice($elt, $id, 1);
 			
 			$elt=json_encode($elt);
-			//print_r($elt);
-			file_put_contents('../data/draftMails.json', $elt); ****/
+			file_put_contents('../data/draftsMails.json', $elt);
 		}
 		else if ($type=="recieved"){ //delete a reception mail
 			$elt = file_get_contents('../data/recievedMails.json');
@@ -148,15 +146,15 @@ switch ($option){
 			file_put_contents('../data/recievedMails.json', $elt);
 		}
 		?>
-		<audio src="../img/delete.mp3" autoplay></audio>
+		<audio src="img/delete.mp3" autoplay></audio>
 		<div style="background:rgba(255,0,0,0.1); border-radius:15px; padding:20px; margin:30px;">
 			<center>Mail supprimé avec succès !</center>
 		</div>
 		<?php
 	break;
-	case 'reply':
+	case 'reply': //reply to and reply all
 		$id = (int) (isset($_GET['id']))?(htmlspecialchars($_GET['id'])):''; //mail id
-		$type = (isset($_GET['type']))?(htmlspecialchars($_GET['type'])):''; //which data to read ? (sentMails, draftMails or recievedMails)
+		$type = (isset($_GET['type']))?(htmlspecialchars($_GET['type'])):''; //which data to read ? (sentMails, draftsMails or recievedMails)
 		$howMany = (isset($_GET['howMany']))?(htmlspecialchars($_GET['howMany'])):''; //one => reply to sender and all=>reply to all
 		if ($type=="recieved"){
 			$theData = '../data/recievedMails.json';
@@ -189,7 +187,7 @@ switch ($option){
 	break;
 	case 'share': //transférer a mail
 		$id = (int) (isset($_GET['id']))?(htmlspecialchars($_GET['id'])):''; //mail id
-		$type = (isset($_GET['type']))?(htmlspecialchars($_GET['type'])):''; //which data to read ? (sentMails, draftMails or recievedMails)
+		$type = (isset($_GET['type']))?(htmlspecialchars($_GET['type'])):''; //which data to read ? (sentMails, draftsMails or recievedMails)
 		if ($type=="recieved"){
 			$elt = file_get_contents('../data/recievedMails.json');
 			$elt = json_decode($elt, true);
@@ -205,41 +203,61 @@ switch ($option){
 		?>
 		<div>
 			<hr>
-			<iframe src="includes/joEditor/joEditor.html?obj=<?php echo $obj ?>&mess=<?php echo $mess ?>" style="width:100%; height:90vh; border:none;"></iframe>
+			<iframe src="includes/joEditor/joEditor.html?obj=<?php echo $obj ?>&mess=<?php echo htmlspecialchars_decode($mess) ?>" style="width:100%; height:90vh; border:none;"></iframe>
 		</div>
 		<?php
 	break;
 	case 'parametres':
-		$data = file_get_contents('../phpmailer/data.json');
-		$data = json_decode($data, true);
-		?>
-		<h3 style="color: #1E5B89"><i class="fa fa-th"></i> Infos SMTP <i class="fa fa-caret-right"></i> <button class="newMess fa fa-home" onclick="home()"> Fermer</button></h3>
-		<hr>
-		<form method="post" action="installation.php?cas=submit" class="row">
-			<div class="form-group col-4 col-md-2">
-				<label><img src="img/logo.jpg" class="img-thumbnail img-fluid" style="max-height:100px"></label>
+		if (!isset($_GET['edit-logo'])){
+			$data = file_get_contents('../phpmailer/data.json');
+			$data = json_decode($data, true);
+			?>
+			<h3 style="color: #1E5B89"><i class="fa fa-th"></i> Infos SMTP <i class="fa fa-caret-right"></i> <button class="newMess fa fa-home" onclick="home()"> Fermer</button></h3>
+			<hr>
+			<div class="row">
+				<form method="post" id="edit-logo" action="includes/myMail.php?opt=parametres&edit-logo=true" class="col-3 col-md-2" enctype="multipart/form-data">
+					<label><img src="img/logo.jpg" class="img-thumbnail img-fluid" style="max-height:100px"></label>
+					<input type="file" name="theLogo" id="theLogo" style="position:absolute; top:inherit; left:10px; width:60px; overflow:hidden; opacity:0.9; cursor:pointer" onchange="editLogo()">
+				</form>
+				<form method="post" action="installation.php?cas=submit" class="col-9 col-md-6">
+					<div class="form-group">
+						<label for="host">Host</label>
+						<input type="text" class="form-control" id="host" name="host" value="<?php echo $data['host'] ?>" required="">
+					</div>
+					<div class="form-group">
+						<label for="user">User</label>
+						<input type="email" class="form-control" name="user" value="<?php echo $data['user'] ?>" required="">
+					</div>
+					<div class="form-group">
+						<label for="pwd">Password</label>
+						<input type="password" class="form-control" id="pwd" name="pwd" value="<?php echo $data['password'] ?>" required="">
+					</div>
+					<div class="form-group">
+						<label for="user">Port</label>
+						<input type="number" class="form-control" id="port" name="port" value="<?php echo $data['port'] ?>" required="" min="0">
+					</div>
+					<button type="submit" class="newMess btn-block">Modifier</button>
+				</form>
 			</div>
-			<div class="col-10 col-md-6">
-				<div class="form-group">
-					<label for="host">Host</label>
-					<input type="text" class="form-control" id="host" name="host" value="<?php echo $data['host'] ?>" required="">
-				</div>
-				<div class="form-group">
-					<label for="user">User</label>
-					<input type="email" class="form-control" name="user" value="<?php echo $data['user'] ?>" required="">
-				</div>
-				<div class="form-group">
-					<label for="pwd">Password</label>
-					<input type="password" class="form-control" id="pwd" name="pwd" value="<?php echo $data['password'] ?>" required="">
-				</div>
-				<div class="form-group">
-					<label for="user">Port</label>
-					<input type="number" class="form-control" id="port" name="port" value="<?php echo $data['port'] ?>" required="" min="0">
-				</div>
-				<button type="submit" class="newMess btn-block">Modifier</button>
-			</div>
-		</form>
-		<?php
+			<?php
+		}else if (isset($_GET['edit-logo'])){
+			$image = $_FILES['theLogo'];
+			$extensions_valides = array( 'jpg' , 'jpeg' , 'gif' , 'png' );
+			$extension_upload = strtolower(  substr(  strrchr($image['name'], '.')  ,1)  );
+			$i=0;
+			if (!in_array($extension_upload,$extensions_valides)) $i++;
+			$name='logo';
+			$nomphoto=str_replace('','',$name).".jpg";
+			$name="../img/".str_replace('','',$name).".jpg";
+			$action = move_uploaded_file($image['tmp_name'],$name);
+			
+			if ($action and $i==0){
+				echo "<center style='margin-top:35vh'><h3>Logo modifié avec succès ! <i><b>NB:</b> L'affichage du nouveau logo peut mettre du temps avant de se rafraichir.</i></h3><br><a href='../index.php'>Terminer</a></center>";
+			}
+			else{
+				echo "<center style='margin-top:35vh'><h3>Erreur détectée, logo non modifiée.</h3><br><a href='../index.php'>Retour</a></center>";
+			}
+		}
 	break;
 	case 'group':
 		if (isset($_GET['delete'])){ //delete a group
@@ -404,6 +422,45 @@ switch ($option){
 			<iframe src="includes/joEditor/joEditor.html?group=<?php echo $mails ?>" style="width:100%; height:90vh; border:none;"></iframe>
 		</div>
 		<?php
+	break;
+	case 'addTrash': //add a mail to draft
+		$oldDraft = strip_tags( (isset($_GET['oldDraft']))?(htmlspecialchars($_GET['oldDraft'])):'' ); //no==add new draft and (number)==edit old draft
+		$obj = strip_tags( (isset($_GET['obj']))?(htmlspecialchars($_GET['obj'])):'' );
+		$to = strip_tags( (isset($_GET['to']))?(htmlspecialchars($_GET['to'])):'' );
+		$cc = strip_tags( (isset($_GET['cc']))?(htmlspecialchars($_GET['cc'])):'' );
+		$cci = strip_tags( (isset($_GET['cci']))?(htmlspecialchars($_GET['cci'])):'' );
+		$mess = strip_tags( (isset($_GET['mess']))?(htmlspecialchars($_GET['mess'])):'' );
+		$mess = nl2br($mess);
+		$mess = htmlspecialchars_decode($mess);
+		$date=date('Y').'-'.date('m').'-'.date('d');
+		//echo $obj.' - '.$to.' - '.$cc.' - '.$cci.'<br>'.$mess;
+		$drafts = file_get_contents('../data/draftsMails.json');
+		$drafts = json_decode($drafts, true);
+		
+		$elt = file_get_contents('../phpmailer/data.json'); //contient your SMTP infos
+		$elt = json_decode($elt, true);
+		$auth = explode("@", $elt['user'])[0]; //get your name before @ from your SMTP infos saved into ../phpmailer/data.json
+		$authMail = $elt['user']; //get your mail from your SMTP infos saved into ../phpmailer/data.json
+		
+		if ($oldDraft == "no"){ //create new draft
+			$json = (object) array('author'=>$auth, 'authorMail'=>$authMail, 'authorPic'=>'gmail.png', 'date'=>$date, 'read'=>'true', 'object'=>$obj, 'to'=>$to, 'cc'=>$cc, 'cci'=>$cci, 'message'=>$mess);
+			$new = json_decode(json_encode($json), true);
+			array_push($drafts, $new); //add the new group
+		}else{ //it's and id, so edit old draft
+			$id = (int) $oldDraft;
+			$drafts[$id]['date'] = $date;
+			$drafts[$id]['object'] = $obj;
+			$drafts[$id]['to'] = $to;
+			$drafts[$id]['cc'] = $cc;
+			$drafts[$id]['cci'] = $cci;
+			$drafts[$id]['message'] = $mess;
+		}
+
+//		print_r($drafts);
+		$drafts=json_encode($drafts);
+		file_put_contents('../data/draftsMails.json', $drafts); //save data
+
+		echo "<center style='margin-top:35vh'><h3>Votre mail a été ajouté à vos brouillons avec succès !</h3>";
 	break;
 	default:
 		?>

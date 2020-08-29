@@ -20,6 +20,7 @@ Project Actual Version: 1.0  -  date: 2020-08-18
         <link href="css/calendar.css" rel="stylesheet" type="text/css" media="all" />
         <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anton" type="text/css">
+		<link rel="shortcut icon" type="image/x-icon" href="img/gmail.png" type="text/css" media="all" />
 		
         <script src='https://kit.fontawesome.com/a076d05399.js'></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -39,7 +40,7 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 				<!--------left row---------->
 				<div class="col-1 leftRow">
 					<div class="row" style="margin-top:-15px">
-						<div class="col-12 logoBlock" onclick="home()" title="Accueil newsletter">
+						<div class="col-12 logoBlock" onclick="home(reload=true)" title="Accueil newsletter">
 						<!----logo (edit it in style class .logo)---->
 						</div>
 					</div>
@@ -230,7 +231,7 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 			//---------------------------
 			function writeNewMail(){ //load for writing a new mail
 				ajaxLoad("includes/myMail.php?opt=new");
-				document.getElementById('bodyHead').innerHTML='<h3 style="color: #fff"><i class="fa fa-th"></i> Nouveau Message <i class="fa fa-caret-right"></i> <span id="btnElts"><button class="newMess fa fa-home" onclick="home()"> Annuler</button> <button class="newMess fa fa-trash" onclick="addTrash()"> Brouillon</button></span></h3>';
+				document.getElementById('bodyHead').innerHTML='<h3 style="color: #fff"><i class="fa fa-th"></i> Nouveau Message <i class="fa fa-caret-right"></i> <span id="btnElts"><button class="newMess fa fa-home" onclick="home()"> Annuler</button></span></h3>';
 			}
 			//---------------------------
 			function writeGroupMail(id){ //load for writing a new group mail
@@ -238,8 +239,9 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 				document.getElementById('bodyHead').innerHTML='<h3 style="color: #fff"><i class="fa fa-th"></i> Nouveau Message au Groupe <i class="fa fa-caret-right"></i> <span id="btnElts"><button class="newMess fa fa-home" onclick="home()"> Annuler</button> <button class="newMess fa fa-trash" onclick="addTrash()"> Brouillon</button></span></h3>';
 			}
 			//---------------------------
-			function home(){
-				window.location.href="index.php";
+			function home(reload=false){
+				if (reload){ location.reload(); } //reload full page
+				else{ ajaxLoad("includes/myMail.php"); } //just reload right section (read mail section)
 			}
 			//---------------------------
 			function setAsRead(id){ //set a mail comme read
@@ -259,10 +261,6 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 				ajaxLoad_2("includes/aside.php?opt=draft");
 			}
 			//---------------------------
-			function addTrash(){ //add mail to draft (i.e je ne veux pas send it so I add it to corbeille)
-				alert("add draft");
-			}
-			//---------------------------
 			function reply(id, type, howMany){ //reply to mail from data type with this id
 				//alert(id+" -- "+type+" -- "+howMany);
 				//one => reply to sender and all=>reply to all
@@ -280,11 +278,11 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 				//alert(id+" -- "+type);
 				ajaxLoad("includes/myMail.php?opt=suppr&id="+id+"&type="+type);
 				if (type=="sent"){
-					ajaxLoad_2("includes/aside.php?opt=sent"); //reload sent mails list
+					sent(); //reload sent mails list
 				}else if (type=="recieved"){
-					ajaxLoad_2("includes/aside.php"); //reload recieved mails list
+					reception(); //reload recieved mails list
 				}else if (type=="draft"){
-					ajaxLoad_2("includes/aside.php?opt=draft"); //reload draft mails list
+					draft(); //reload draft mails list
 				}
 			}
 			//---------------------------
@@ -304,6 +302,13 @@ Project Actual Version: 1.0  -  date: 2020-08-18
 				}else{
 					ajaxLoad("includes/myMail.php?opt=group&id="+id);
 				}
+			}
+			//---------------------------
+			function editLogo(){
+				let input = document.getElementById('edit-logo');
+				if(input.theLogo.files.length > 0){
+					input.submit();
+				};
 			}
 			//---------------------------
 		</script>

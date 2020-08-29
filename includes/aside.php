@@ -29,10 +29,8 @@ switch ($option){
 	break;
 	case 'draft': //draft mails
 		//----read draft mails data//-------
-		$mails = file_get_contents('../data/draftMails.json');
-		$a=explode('draft=', $mails);
-		//print_r($a);
-		$mails = json_decode($a[1], true);
+		$mails = file_get_contents('../data/draftsMails.json');
+		$mails = json_decode($mails, true);
 		//echo $mails[0]['author'];
 		?>
 		<h6><b>Corbeille <i style="color:orange"><?php echo sizeof($mails) ?></i></b></h6>
@@ -66,9 +64,9 @@ switch ($option){
 			//echo $mails[$i]['object'];
 			?>
 			<div class="entity">
-				<div class="row mailEntity2" onclick="displayGroup(<?php echo $i ?>)">
+				<div class="row mailEntity" onclick="displayGroup(<?php echo $i ?>)">
 					<div class="col-2">
-						<?php echo "GRP".$j ?>
+						<?php echo "<i class='fa fa-users'></i>".$j ?>
 					</div>
 					<div class="col-10">
 						<h6><b><?php echo $mails[$i]['name'] ?></b></h6>
